@@ -1,0 +1,28 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: tomcat
+spec: {}
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: tomcat
+  labels:
+    name: tomcat
+spec:
+  triggers:
+    - type: ConfigChange
+  source:
+    contextDir: "tomcat/"
+    type: Git
+    git:
+      uri: 'https://github.com/openshift-examples/tomcat-example'
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: "Containerfile"
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'tomcat:latest'

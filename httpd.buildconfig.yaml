@@ -11,6 +11,8 @@ metadata:
   labels:
     build: httpd
 spec:
+  triggers:
+    - type: ConfigChange
   nodeSelector: null
   output:
     to:
@@ -21,8 +23,9 @@ spec:
     type: Source
     sourceStrategy:
       from:
-        kind: DockerImage
-        name: 'registry'
+        kind: ImageStreamTag
+        namespace: openshift
+        name: 'httpd:2.4-ubi9'
   source:
     type: Git
     git:

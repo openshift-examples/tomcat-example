@@ -1,0 +1,43 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  annotations:
+    alpha.image.policy.openshift.io/resolve-names: '*'
+    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"httpd:latest","namespace":"rbohne-vw-autostadt"},"fieldPath":"spec.template.spec.containers[?(@.name==\"httpd\")].image","pause":"false"}]'
+  name: httpd
+  labels:
+    app: httpd
+    app.kubernetes.io/component: httpd
+    app.kubernetes.io/instance: httpd
+    app.kubernetes.io/name: httpd
+    app.kubernetes.io/part-of: tomcat-example
+    app.openshift.io/runtime: apache
+    app.openshift.io/runtime-version: latest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpd
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: httpd
+        deployment: httpd
+    spec:
+      containers:
+        - name: httpd
+          image: 'dummy'
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 8443
+              protocol: TCP
+          resources: {}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
